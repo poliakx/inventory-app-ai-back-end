@@ -14,13 +14,20 @@ const computeFoodCost = (ingredients) => {
 
 const withFoodCost = (recipe, ingredients) => {
   const foodCost = computeFoodCost(ingredients);
+
+  const costPerGram = recipe.yieldWeight ? foodCost / Number(recipe.yieldWeight) : null;
+  const portionCost = costPerGram && recipe.portionWeight
+    ? costPerGram * Number(recipe.portionWeight)
+    : null;
+
   const foodCostPercentage = recipe.salePrice
-    ? Number(((foodCost / Number(recipe.salePrice)) * 100).toFixed(2))
+    ? Number((((portionCost ?? foodCost) / Number(recipe.salePrice)) * 100).toFixed(2))
     : null;
 
   return {
     ...recipe,
     foodCost: Number(foodCost.toFixed(2)),
+    portionCost: portionCost !== null ? Number(portionCost.toFixed(2)) : null,
     foodCostPercentage,
   };
 };

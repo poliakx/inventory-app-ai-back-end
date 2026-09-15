@@ -32,7 +32,7 @@ export const recipesRepository = {
   },
 
   async create(
-    { name, instructions, yieldWeight, yieldUnit, portions, salePrice, photoUrl, category_id, organization_id },
+    { name, instructions, yieldWeight, yieldUnit, portions, salePrice, portionWeight, photoUrl, category_id, organization_id },
     db = null
   ) {
     const executor = getExecutor(db);
@@ -43,6 +43,7 @@ export const recipesRepository = {
       yieldUnit ?? "g",
       portions ?? null,
       salePrice ?? null,
+      portionWeight ?? null,
       photoUrl ?? null,
       category_id ?? null,
       organization_id,
@@ -53,7 +54,7 @@ export const recipesRepository = {
   async update(
     organization_id,
     id,
-    { name, instructions, yieldWeight, yieldUnit, portions, salePrice, photoUrl, category_id },
+    { name, instructions, yieldWeight, yieldUnit, portions, salePrice, portionWeight, photoUrl, category_id },
     db = null
   ) {
     const executor = getExecutor(db);
@@ -66,6 +67,7 @@ export const recipesRepository = {
       yieldUnit ?? null,
       portions ?? null,
       salePrice ?? null,
+      portionWeight ?? null,
       photoUrl ?? null,
       category_id ?? null,
     ]);

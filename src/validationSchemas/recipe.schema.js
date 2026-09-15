@@ -46,6 +46,10 @@ export const createRecipeSchema = z.object({
     .number({ invalid_type_error: "Sale price must be a number" })
     .positive("Sale price must be greater than 0")
     .optional(),
+  portionWeight: z.coerce
+    .number({ error: "Portion weight must be a number" })
+    .positive("Portion weight must be greater than 0")
+    .optional(),
   photoUrl: z
     .string({ invalid_type_error: "Photo URL must be a string" })
     .url("Photo URL must be a valid URL")
@@ -82,6 +86,10 @@ export const updateRecipeSchema = z.object({
   salePrice: z.coerce
     .number({ invalid_type_error: "Sale price must be a number" })
     .positive("Sale price must be greater than 0")
+    .optional(),
+  portionWeight: z.coerce
+    .number({ error: "Portion weight must be a number" })
+    .positive("Portion weight must be greater than 0")
     .optional(),
   photoUrl: z
     .string({ invalid_type_error: "Photo URL must be a string" })
