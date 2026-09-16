@@ -2,6 +2,7 @@
 import { api } from "../../setup/testClient.js";
 import { createAdmin, createStaff } from "../../helpers/auth.helper.js";
 import { newProduct } from "../../fixtures/product.fixture.js";
+import { newStockMovement } from "../../fixtures/stock-movement.fixture.js";
 import { createProduct } from "../../helpers/product.helper.js";
 
 describe("products API (integration)", () => {
@@ -165,6 +166,28 @@ describe("products API (integration)", () => {
 
     expect(res.statusCode).toBe(204);
     expect(res.body).toEqual({});
+  });
+
+  it("DELETE /api/products/:id — product used in a stock movement → 409 with friendly message", async () => {
+    const token = await createAdmin();
+
+    const created = await api
+      .post("/api/products")
+      .set("Authorization", `Bearer ${token}`)
+      .send(newProduct);
+    const productId = created.body.data.id;
+
+    await api
+      .post("/api/stock/movements")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ ...newStockMovement, productId });
+
+    const res = await api
+      .delete(`/api/products/${productId}`)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(409);
+    expect(res.body.message).toMatch(/stock movements/i);
   });
 
   it("GET/api/products - getting products without token -> 401", async () => {

@@ -1,6 +1,17 @@
 import { logger } from "../../config/logger.js";
 import { ValidationError } from "../../errors/base.error.js";
 
+// Postgres reports foreign-key-violation-on-delete as 23503 (ON DELETE NO
+// ACTION, the default) or 23001 (ON DELETE RESTRICT) — different SQLSTATE
+// codes for the same "can't delete, something still references this row"
+// situation. err.constraint names exactly which FK blocked the delete.
+const CONSTRAINT_MESSAGES = {
+  stock_movements_product_id_fkey:
+    "This product can't be deleted because it's used in stock movements",
+  recipe_ingredients_product_id_fkey:
+    "This product can't be deleted because it's used in a recipe",
+};
+
 const sanitizeBody = (body) => {
   if (!body || typeof body !== "object") return body;
 
@@ -56,6 +67,24 @@ export const errorMiddleware = (err, req, res, next) => {
     });
   }
 
+
+  if (err.code === "23001" || err.code === "23503") {
+    const message =
+      CONSTRAINT_MESSAGES[err.constraint] ??
+      "This record can't be deleted because other records depend on it";
+
+    logger.warn("Delete blocked by foreign key constraint", {
+      ...requestContext,
+      status: 409,
+      constraint: err.constraint,
+    });
+
+    return res.status(409).json({
+      status: "error",
+      message,
+      requestId,
+    });
+  }
 
   const status = err.statusCode || err.status || 500;
 
