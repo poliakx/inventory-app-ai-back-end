@@ -37,11 +37,6 @@ export const createRecipeSchema = z.object({
     .positive("Yield weight must be greater than 0")
     .optional(),
   yieldUnit: unitEnum.optional().default("g"),
-  portions: z.coerce
-    .number({ invalid_type_error: "Portions must be a number" })
-    .int("Portions must be an integer")
-    .positive("Portions must be greater than 0")
-    .optional(),
   salePrice: z.coerce
     .number({ invalid_type_error: "Sale price must be a number" })
     .positive("Sale price must be greater than 0")
@@ -78,11 +73,6 @@ export const updateRecipeSchema = z.object({
     .positive("Yield weight must be greater than 0")
     .optional(),
   yieldUnit: unitEnum.optional(),
-  portions: z.coerce
-    .number({ invalid_type_error: "Portions must be a number" })
-    .int("Portions must be an integer")
-    .positive("Portions must be greater than 0")
-    .optional(),
   salePrice: z.coerce
     .number({ invalid_type_error: "Sale price must be a number" })
     .positive("Sale price must be greater than 0")

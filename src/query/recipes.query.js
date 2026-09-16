@@ -7,7 +7,6 @@ export const RECIPES_COLUMNS = `
   instructions,
   yield_weight AS "yieldWeight",
   yield_unit AS "yieldUnit",
-  portions,
   sale_price AS "salePrice",
   portion_weight AS "portionWeight",
   photo_url AS "photoUrl",
@@ -48,14 +47,13 @@ export const qCreateRecipe = `
     instructions,
     yield_weight,
     yield_unit,
-    portions,
     sale_price,
     portion_weight,
     photo_url,
     category_id,
     organization_id
   )
-  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
   RETURNING ${RECIPES_COLUMNS}
 `;
 
@@ -66,11 +64,10 @@ export const qUpdateRecipe = `
     instructions = COALESCE($4, instructions),
     yield_weight = COALESCE($5, yield_weight),
     yield_unit = COALESCE($6, yield_unit),
-    portions = COALESCE($7, portions),
-    sale_price = COALESCE($8, sale_price),
-    portion_weight = COALESCE($9, portion_weight),
-    photo_url = COALESCE($10, photo_url),
-    category_id = COALESCE($11, category_id),
+    sale_price = COALESCE($7, sale_price),
+    portion_weight = COALESCE($8, portion_weight),
+    photo_url = COALESCE($9, photo_url),
+    category_id = COALESCE($10, category_id),
     updated_at = NOW()
   WHERE organization_id = $1
     AND id = $2
