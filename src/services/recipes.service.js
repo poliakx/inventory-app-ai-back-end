@@ -20,8 +20,8 @@ const withFoodCost = (recipe, ingredients) => {
     ? costPerGram * Number(recipe.portionWeight)
     : null;
 
-  const foodCostPercentage = recipe.salePrice
-    ? Number((((portionCost ?? foodCost) / Number(recipe.salePrice)) * 100).toFixed(2))
+  const foodCostPercentage = recipe.salePrice && portionCost !== null
+    ? Number(((portionCost / Number(recipe.salePrice)) * 100).toFixed(2))
     : null;
 
   return {
