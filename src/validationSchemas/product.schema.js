@@ -19,7 +19,6 @@ export const createProductSchema = z.object({
       required_error: "Quantity is required",
       invalid_type_error: "Quantity must be a number",
     })
-    .int("Quantity must be an integer")
     .nonnegative("Quantity cannot be negative"),
   unit: unitEnum.default("g"),
   categoryId: z
@@ -62,7 +61,6 @@ export const updateProductSchema = z.object({
     .number({
       invalid_type_error: "Quantity must be a number",
     })
-    .int("Quantity must be an integer")
     .nonnegative("Quantity cannot be negative")
     .optional(),
   unit: unitEnum.optional(),

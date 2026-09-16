@@ -54,7 +54,7 @@ describe("products API (integration)", () => {
     expect(res.body.data.id).toBeDefined();
     expect(res.body.data.name).toBe(newProduct.name);
     expect(Number(res.body.data.price)).toBe(newProduct.price);
-    expect(res.body.data.quantity).toBe(newProduct.quantity);
+    expect(Number(res.body.data.quantity)).toBe(newProduct.quantity);
   });
 
   it("GET /api/products — returns paginated list → 200", async () => {
@@ -110,7 +110,7 @@ describe("products API (integration)", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body.data.name).toBe(updateData.name);
     expect(Number(res.body.data.price)).toBe(10);
-    expect(res.body.data.quantity).toBe(updateData.quantity);
+    expect(Number(res.body.data.quantity)).toBe(updateData.quantity);
   });
 
    it("PUT /api/products/:id — admin updates product without categoryId→ 200", async () => {

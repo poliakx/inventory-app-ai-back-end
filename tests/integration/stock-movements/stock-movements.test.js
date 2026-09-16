@@ -26,7 +26,7 @@ describe("Stock movements flow test", () => {
       .set("Authorization", `Bearer ${admin}`);
 
 
-    expect(newProductData.body.data.quantity).toEqual(newProduct.quantity + newStockMovement.quantity)
+    expect(Number(newProductData.body.data.quantity)).toEqual(newProduct.quantity + newStockMovement.quantity)
   });
 
   it("POST/api/stock/movement -- out movement exceeds stock -> 422", async() =>{
