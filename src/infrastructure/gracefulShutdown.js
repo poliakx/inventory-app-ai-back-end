@@ -13,7 +13,7 @@ export const setupGracefulShutdown = ({ server, pool, redis }) => {
 
     server.close(async (err) => {
       if (err) {
-        logger.error({ err }, "Error while closing HTTP server");
+        logger.error("Error while closing HTTP server", { message: err?.message, stack: err?.stack });
       } else {
         logger.info("HTTP server closed");
       }
@@ -22,14 +22,14 @@ export const setupGracefulShutdown = ({ server, pool, redis }) => {
         await pool?.end();
         logger.info("PostgreSQL pool closed");
       } catch (err) {
-        logger.error({ err }, "Error while closing PostgreSQL pool");
+        logger.error("Error while closing PostgreSQL pool", { message: err?.message, stack: err?.stack });
       }
 
       try {
         await redis?.quit();
         logger.info("Redis connection closed");
       } catch (err) {
-        logger.error({ err }, "Error while closing Redis connection");
+        logger.error("Error while closing Redis connection", { message: err?.message, stack: err?.stack });
       }
     });
   };
