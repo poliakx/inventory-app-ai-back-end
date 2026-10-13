@@ -85,4 +85,24 @@ describe("categories API (integration)", () => {
 
     expect(res.statusCode).toBe(400)
   });
+
+  it("POST/api/categories - two organization can create the same name of category -> 201", async () => {
+    const orgA = await createAdmin()
+    const orgB = await createAdmin()
+
+    const resA = await api
+      .post("/api/categories")
+      .set("Authorization", `Bearer ${orgA}`)
+      .send(newCategory)
+
+    const resB = await api
+      .post("/api/categories")
+      .set("Authorization", `Bearer ${orgB}`)
+      .send(newCategory)   
+
+      expect(resA.statusCode).toBe(201)
+      expect(resB.statusCode).toBe(201)
+      expect(resA.body.data.name).toBe(newCategory.name)
+      expect(resB.body.data.name).toBe(newCategory.name)
+  })
 });

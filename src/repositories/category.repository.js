@@ -4,9 +4,9 @@ import { qCreateCategory, qGetAll, qUpdateCategory, qDeleteCategory, qFindById }
 export const categoryRepository = {
   async create (data, db=null){
     const executor = getExecutor(db);
-    const {name, slug, organization_id} = data
+    const {name, organization_id} = data
 
-    const { rows } = await executor.query(qCreateCategory, [name, slug, organization_id])
+    const { rows } = await executor.query(qCreateCategory, [name, organization_id])
 
     return rows[0]
   },
@@ -19,9 +19,9 @@ export const categoryRepository = {
 
   async update (id, data, organization_id, db=null){
     const executor = getExecutor(db);
-    const { name, slug } = data;
+    const { name, } = data;
 
-    const { rows } = await executor.query(qUpdateCategory, [name, slug, id, organization_id]);
+    const { rows } = await executor.query(qUpdateCategory, [name, id, organization_id]);
 
     return rows[0] ?? null;
   },

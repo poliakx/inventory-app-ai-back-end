@@ -3,7 +3,6 @@ export const CATEGORY_TABLE = "categories";
 export const CATEGORY_COLUMNS = `
 	id,
 	name,
-	slug,
 	description,
 	parent_id AS "parentId",
 	created_at AS "createdAt",
@@ -13,10 +12,9 @@ export const CATEGORY_COLUMNS = `
 export const qCreateCategory = `
 INSERT INTO ${CATEGORY_TABLE} (
   name,
-	slug,
   organization_id
 )
-VALUES ($1, $2, $3)
+VALUES ($1, $2)
 RETURNING ${CATEGORY_COLUMNS}
 `
 
@@ -38,8 +36,8 @@ AND id = $2
 
 export const qUpdateCategory = `
 UPDATE ${CATEGORY_TABLE}
-SET name = $1, slug = $2, updated_at = NOW()
-WHERE id = $3 AND organization_id = $4
+SET name = $1, updated_at = NOW()
+WHERE id = $2 AND organization_id = $3
 RETURNING ${CATEGORY_COLUMNS}
 `;
 
