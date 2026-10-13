@@ -15,6 +15,7 @@ import { requestId } from "./middleware/api/requestId.middleware.js";
 import { rateLimitMiddleware } from "./middleware/api/rate-limit.middleware.js";
 
 import { corsMiddleware } from "./config/cors.js";
+import { notFoundMiddleware } from "./middleware/error/not-found.middleware.js";
 
 const app = express();
 
@@ -35,6 +36,8 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/organizations", organizationRoutes);
 app.use("/api/stock/movements", stockMovementRoutes);
 app.use("/api/recipes", recipeRoutes);
+
+app.use(notFoundMiddleware)
 
 app.use(errorMiddleware);
 
