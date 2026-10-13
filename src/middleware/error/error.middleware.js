@@ -29,7 +29,6 @@ export const errorMiddleware = (err, req, res, next) => {
 
   const requestId = req.requestId;
 
-
   const requestContext = {
     requestId,
     path: req.originalUrl,
@@ -39,16 +38,18 @@ export const errorMiddleware = (err, req, res, next) => {
     body: sanitizeBody(req.body),
   };
 
-  
-
   if (err instanceof ValidationError) {
-    const logIssues = err.details.issues.map((issue) => ({
-      path: issue.path.join("."),
-      message: issue.message,
-      code: issue.code,
-    }));
+    const issues = Array.isArray(err.details?.issues)?err.details.issues:[]
+   
+    
+    const logIssues = issues.map((issue) => ({
+        path: issue.path.join("."),
+        message: issue.message,
+        code: issue.code,
+      }))
+    
 
-    const clientError = err.details.issues.map((issue) =>({
+    const clientError = issues.map((issue) =>({
       field: issue.path.join("."),
       message: issue.message
     }))

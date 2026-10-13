@@ -150,6 +150,25 @@ describe("products API (integration)", () => {
     expect(res.statusCode).toBe(400);
   });
 
+  it("PUT/api/products/:id  — user try to update product with empty form body -> 400", async () => {
+     const token = await createAdmin();
+    const updateData = {};
+
+    const created = await api
+      .post("/api/products")
+      .set("Authorization", `Bearer ${token}`)
+      .send(newProduct);
+    const createdId = created.body.data.id;
+
+    const res = await api
+      .put(`/api/products/${createdId}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send(updateData);
+
+      expect(res.statusCode).toBe(400);
+      expect(res.headers["content-type"]).toMatch(/json/);
+  })
+
   it("DELETE /api/products/:id — admin deletes product → 204", async () => {
     const token = await createAdmin();
 
@@ -187,7 +206,7 @@ describe("products API (integration)", () => {
       .set("Authorization", `Bearer ${token}`);
 
     expect(res.statusCode).toBe(409);
-    expect(res.body.message).toMatch(/stock movements/i);
+    expect(res.body.message).toMatch(/stock movements/);
   });
 
   it("GET/api/products - getting products without token -> 401", async () => {
@@ -221,6 +240,7 @@ describe("products API (integration)", () => {
         });
 
     expect(res.statusCode).toBe(400)
+    expect(res.body.errors[0].field).toBe("price")
   });
 
   it("POST/api/products - staff tries to create product -> 403", async () => {
