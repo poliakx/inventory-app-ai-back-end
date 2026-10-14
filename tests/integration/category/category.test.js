@@ -14,6 +14,23 @@ describe("categories API (integration)", () => {
       expect(res.statusCode).toBe(201)
   });
 
+  it("POST/api/category — admin creates category with the same name → 409", async () => {
+    const admin = await createAdmin();
+
+      await api
+      .post("/api/categories")
+      .set("Authorization", `Bearer ${admin}`)
+      .send(newCategory)
+
+      const res = await api
+      .post("/api/categories")
+      .set("Authorization", `Bearer ${admin}`)
+      .send(newCategory)
+
+      expect(res.statusCode).toBe(409)
+      expect(res.body.message).toMatch(/category/i)
+  });
+
   it("GEt/api/categories — admin take list of categories → 200", async () => {
      const admin = await createAdmin();
 

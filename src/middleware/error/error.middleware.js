@@ -1,15 +1,14 @@
 import { logger } from "../../config/logger.js";
 import { ValidationError } from "../../errors/base.error.js";
 
-// Postgres reports foreign-key-violation-on-delete as 23503 (ON DELETE NO
-// ACTION, the default) or 23001 (ON DELETE RESTRICT) — different SQLSTATE
-// codes for the same "can't delete, something still references this row"
-// situation. err.constraint names exactly which FK blocked the delete.
+ //23503 = NO ACTION, 23001 = RESTRICT the same situation that why we checked both»
 const CONSTRAINT_MESSAGES = {
   stock_movements_product_id_fkey:
     "This product can't be deleted because it's used in stock movements",
   recipe_ingredients_product_id_fkey:
     "This product can't be deleted because it's used in a recipe",
+  categories_organization_name_unique:
+    "A category with this name already exists"
 };
 
 const sanitizeBody = (body) => {
@@ -85,6 +84,22 @@ export const errorMiddleware = (err, req, res, next) => {
       message,
       requestId,
     });
+  }
+
+   if (err.code === "23505"){
+    const message = CONSTRAINT_MESSAGES[err.constraint] ?? "This record already exists"
+
+    logger.warn("Duplicate value blocked by unique constraint",{
+      ...requestContext,
+      status: 409,
+      constraint: err.constraint
+    })
+
+    return res.status(409).json({
+      status: "error",
+      message,
+      requestId
+    })
   }
 
   const status = err.statusCode || err.status || 500;
