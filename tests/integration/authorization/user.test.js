@@ -45,6 +45,25 @@ describe("Auth /api/auth/user", ()=>{
     expect(res.headers["set-cookie"]).toBeDefined();
   });
 
+  it("Should revoke all user tokens with refresh by old token 401", async() => {
+    await api.post("/api/auth/register").send(newUser);
+
+    const loginRes = await api.post("/api/auth/login").send({
+      email: newUser.email,
+      password: newUser.password,
+    });
+
+    const cookiesA = loginRes.headers["set-cookie"];
+    const refreshToken = await api.post("/api/auth/refresh").set("Cookie", cookiesA);
+    const cookiesB = refreshToken.header["set-cookie"]
+    
+    const resA = await api.post("/api/auth/refresh").set("Cookie", cookiesA);
+    expect(resA.statusCode).toBe(401)
+    const resB = await api.post("/api/auth/refresh").set("Cookie", cookiesB);
+    expect(resB.statusCode).toBe(401)
+
+  })
+
   it("Should block non-admin user (403)", async()=>{
 
     await api.post("/api/auth/register").send(newUser);

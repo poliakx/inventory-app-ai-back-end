@@ -18,6 +18,7 @@ import {
   comparePassword,
 } from "../infrastructure/auth/helpers/passwordHash.js";
 import { v4 as uuidv4 } from "uuid";
+import { logger } from "../config/logger.js";
 
 export const authService = {
   register: async ({ name, email, password, organizationName }) => {
@@ -101,7 +102,7 @@ export const authService = {
     const payload = verifyRefreshToken(refreshToken);
     const tokenHash = hashRefreshToken(refreshToken);
 
-    return transactionFunc(async (db) => {
+    const result = await transactionFunc(async (db) => {
       const valid = await refreshTokenRepository.findValidByHash(tokenHash, db);
 
       if (!valid) {
@@ -109,15 +110,21 @@ export const authService = {
 
         if (any?.revoked_at) {
           await refreshTokenRepository.revokeByAllForUser(any.user_id, db);
-          throw new TokenReuseDetectedError();
+          return {
+            revoked: true,
+            userId: any.user_id
+          }
         }
 
         throw new InvalidTokenError();
       }
 
       if (valid.user_id !== payload.sub) {
-        await refreshTokenRepository.revokeByAllForUser(valid.user_id, db);
-        throw new InvalidTokenError("Refresh token mismatch detected");
+       await refreshTokenRepository.revokeByAllForUser(valid.user_id, db);
+       return {
+        mismatch: true,
+        userId: valid.user_id
+        }
       }
 
       await refreshTokenRepository.revokeById(valid.id, db);
@@ -148,5 +155,13 @@ export const authService = {
         refreshToken: newRefreshToken,
       };
     });
+    if(result.mismatch){
+       logger.warn("Token mismatch detected", {userId: result.userId} )
+      throw new InvalidTokenError("Refresh token mismatch detected")
+    } else if (result.revoked){
+      logger.warn("Token reuse detected", {userId: result.userId} )
+      throw new TokenReuseDetectedError()
+    }
+    return result 
   },
 };
