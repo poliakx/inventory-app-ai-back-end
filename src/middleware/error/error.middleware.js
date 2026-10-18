@@ -1,7 +1,7 @@
 import { logger } from "../../config/logger.js";
 import { ValidationError } from "../../errors/base.error.js";
 
- //23503 = NO ACTION, 23001 = RESTRICT the same situation that why we checked both»
+ //23503 = NO ACTION, 23001 = RESTRICT the same situation that why we checked both
 const CONSTRAINT_MESSAGES = {
   stock_movements_product_id_fkey:
     "This product can't be deleted because it's used in stock movements",
