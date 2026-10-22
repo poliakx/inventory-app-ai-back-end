@@ -30,6 +30,7 @@ WHERE token_hash = $1
   AND revoked_at IS NULL
   AND expires_at > now()
 LIMIT 1
+FOR UPDATE
 `;
 
 export const qRevokeById = `

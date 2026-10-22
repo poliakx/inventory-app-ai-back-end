@@ -56,12 +56,31 @@ describe("Auth /api/auth/user", ()=>{
     const cookiesA = loginRes.headers["set-cookie"];
     const refreshToken = await api.post("/api/auth/refresh").set("Cookie", cookiesA);
     const cookiesB = refreshToken.header["set-cookie"]
-    
+
     const resA = await api.post("/api/auth/refresh").set("Cookie", cookiesA);
     expect(resA.statusCode).toBe(401)
     const resB = await api.post("/api/auth/refresh").set("Cookie", cookiesB);
     expect(resB.statusCode).toBe(401)
+  })
 
+  it("Should check that from two same refresh request just one work", async() => {
+     await api.post("/api/auth/register").send(newUser);
+
+    const loginRes = await api.post("/api/auth/login").send({
+      email: newUser.email,
+      password: newUser.password,
+    });
+
+      const cookies = loginRes.headers["set-cookie"];
+      const [r1, r2] = await Promise.all([
+       api.post("/api/auth/refresh").set("Cookie", cookies),
+       api.post("/api/auth/refresh").set("Cookie", cookies)
+    ])
+    const statuses = [r1.statusCode, r2.statusCode].sort()
+
+    expect(statuses).toEqual([200, 401])
+    
+    
   })
 
   it("Should block non-admin user (403)", async()=>{
