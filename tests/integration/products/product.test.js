@@ -93,7 +93,7 @@ describe("products API (integration)", () => {
 
   it("PUT /api/products/:id — admin updates product → 200", async () => {
     const token = await createAdmin();
-    const updateData = { price: "10.00", quantity: 1, name: "UpdateTest", unit: "kg",  };
+    const updateData = { price: 10.00, quantity: 1, name: "UpdateTest", unit: "kg",  };
 
     const created = await api
       .post("/api/products")
@@ -115,7 +115,7 @@ describe("products API (integration)", () => {
 
    it("PUT /api/products/:id — admin updates product without categoryId→ 200", async () => {
     const token = await createAdmin();
-    const updateData = { price: "10.00", quantity: 1, name: "UpdateTest", unit: "kg", categoryId: undefined};
+    const updateData = { price: 10.00, quantity: 1, name: "UpdateTest", unit: "kg", categoryId: undefined};
 
     const created = await createProduct(token)
 
@@ -168,6 +168,86 @@ describe("products API (integration)", () => {
       expect(res.statusCode).toBe(400);
       expect(res.headers["content-type"]).toMatch(/json/);
   })
+
+  it("PUT/api/products/:id -- update quantity with null input", async () => {
+    const token = await createAdmin()
+
+    const created = await api
+    .post("/api/products")
+    .set("Authorization", `Bearer ${token}`)
+    .send(newProduct)
+
+    const createdId = created.body.data.id
+
+    const res = await api
+    .put(`/api/products/${createdId}`)
+    .set("Authorization", `Bearer ${token}`)
+    .send({"price": null})
+
+    expect(res.statusCode).toBe(400)
+  })
+
+  it("PUT/api/products/:id -- update only name data", async () => {
+    const token = await createAdmin()
+
+    const created = await api
+    .post("/api/products")
+    .set("Authorization", `Bearer ${token}`)
+    .send(newProduct)
+
+    const createdId = created.body.data.id
+
+    const res = await api
+    .put(`/api/products/${createdId}`)
+    .set("Authorization", `Bearer ${token}`)
+    .send({"name": "newName"})
+
+    expect(res.statusCode).toBe(200)
+    expect(res.body.data.price).toBe(created.body.data.price)
+    expect(res.body.data.avgWeightGrams).toBe(created.body.data.avgWeightGrams)
+    expect(res.body.data.name).toBe("newName")
+
+  })
+
+    it("PUT/api/products/:id -- update quantity for 0 -> 200", async () => {
+    const token = await createAdmin()
+
+    const created = await api
+    .post("/api/products")
+    .set("Authorization", `Bearer ${token}`)
+    .send(newProduct)
+
+    const createdId = created.body.data.id
+
+    const res = await api
+    .put(`/api/products/${createdId}`)
+    .set("Authorization", `Bearer ${token}`)
+    .send({"quantity": 0})
+
+    expect(res.statusCode).toBe(200)
+    expect(res.body.data.quantity).toBe("0.000")
+
+  })
+
+  it("PUT/api/products/:id -- update quantity for null -> 400", async () => {
+    const token = await createAdmin()
+
+    const created = await api
+    .post("/api/products")
+    .set("Authorization", `Bearer ${token}`)
+    .send(newProduct)
+
+    const createdId = created.body.data.id
+
+    const res = await api
+    .put(`/api/products/${createdId}`)
+    .set("Authorization", `Bearer ${token}`)
+    .send({"quantity": null})
+
+    expect(res.statusCode).toBe(400)
+
+  })
+
 
   it("DELETE /api/products/:id — admin deletes product → 204", async () => {
     const token = await createAdmin();

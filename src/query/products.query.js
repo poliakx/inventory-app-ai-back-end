@@ -56,12 +56,12 @@ export const qCreateProduct = `
 export const qUpdateProduct = `
   UPDATE ${PRODUCTS_TABLE}
   SET
-    name = $3,
-    price = $4,
-    quantity = $5,
+    name = COALESCE($3, name),
+    price = COALESCE($4, price),
+    quantity = COALESCE($5, quantity),
     unit = COALESCE($6, unit),
-    avg_weight_grams = $7,
-    avg_volume_ml = $8,
+    avg_weight_grams = COALESCE($7, avg_weight_grams),
+    avg_volume_ml = COALESCE($8, avg_volume_ml),
     category_id = $9,
     updated_at = NOW()
   WHERE organization_id = $1
@@ -72,12 +72,12 @@ export const qUpdateProduct = `
 export const qUpdateProductWithoutCategory = `
   UPDATE ${PRODUCTS_TABLE}
   SET
-    name = $3,
-    price = $4,
-    quantity = $5,
+    name = COALESCE($3, name),
+    price = COALESCE($4, price),
+    quantity = COALESCE($5, quantity),
     unit = COALESCE($6, unit),
-    avg_weight_grams = $7,
-    avg_volume_ml = $8,
+    avg_weight_grams = COALESCE($7, avg_weight_grams),
+    avg_volume_ml = COALESCE($8, avg_volume_ml),
     updated_at = NOW()
   WHERE organization_id = $1
     AND id = $2

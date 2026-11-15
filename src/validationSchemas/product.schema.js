@@ -10,12 +10,12 @@ export const createProductSchema = z.object({
     })
     .min(1, "Product name cannot be empty")
     .max(255, "Product name is too long"),
-  price: z.coerce.number({
+  price: z.number({
       required_error: "Price is required",
       invalid_type_error: "Price must be a number",
     })
     .positive("Price must be greater than 0"),
-  quantity: z.coerce.number({
+  quantity: z.number({
       required_error: "Quantity is required",
       invalid_type_error: "Quantity must be a number",
     })
@@ -27,8 +27,7 @@ export const createProductSchema = z.object({
     })
     .uuid("Category ID must be a valid UUID")
     .nullish(),
-  avgWeightGrams: z
-    .coerce.number()
+  avgWeightGrams: z.number()
     .positive().
     optional(),
   avgVolumeMl:  z
@@ -51,13 +50,13 @@ export const updateProductSchema = z.object({
     })
     .min(1, "Product name cannot be empty")
     .optional(),
-  price: z.coerce
+  price: z
     .number({
       invalid_type_error: "Price must be a number",
     })
     .positive("Price must be greater than 0")
     .optional(),
-  quantity: z.coerce
+  quantity: z
     .number({
       invalid_type_error: "Quantity must be a number",
     })
@@ -71,11 +70,11 @@ export const updateProductSchema = z.object({
     .uuid("Category ID must be a valid UUID")
     .nullish(),
   avgWeightGrams: z
-    .coerce.number()
+    .number()
     .positive().
     optional(),
   avgVolumeMl:  z
-    .coerce.number()
+    .number()
     .positive().
     optional(),
 });
