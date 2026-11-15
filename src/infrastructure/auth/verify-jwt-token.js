@@ -3,7 +3,6 @@ import {env} from "../../config/env.js"
 import { AuthError } from "../../errors/autorization/authErrors.js"
 
 export const verifyAccessToken = (token) =>{
-
   if(!env.JWT_ACCESS_SECRET){
     throw new AuthError("Secret not set")
   }

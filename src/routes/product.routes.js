@@ -22,7 +22,7 @@ router.get(
 );
 router.post(
   "/", 
-  authMiddleware, 
+  authMiddleware,
   requireRole("admin"),
   validate(createProductSchema, "body"), 
   productsController.createProduct
