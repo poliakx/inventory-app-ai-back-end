@@ -1,9 +1,0 @@
-$kind: http-request
-method: DELETE
-url: '{{baseUrl}}/api/products/{{productId}}'
-order: 5000
-auth:
-  type: bearer
-  credentials:
-    - key: token
-      value: '{{accessToken}}'

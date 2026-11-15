@@ -1,6 +1,0 @@
-name: Quiz Builder — Local
-values:
-  - key: baseUrl
-    value: 'http://localhost:3000'
-  - key: quizId
-    value: ''

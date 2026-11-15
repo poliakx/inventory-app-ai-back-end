@@ -1,7 +1,0 @@
-$kind: http-request
-name: GET /health
-description: Check that the server is running.
-url: "{{baseUrl}}/health"
-method: GET
-examples: ./.resources/GET -health.resources/examples
-order: 1000
