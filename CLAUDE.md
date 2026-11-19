@@ -44,6 +44,16 @@ After any non-trivial piece of code (mine or yours-with-permission) is done: ask
 ## Testing Standard
 Every resource needs: CRUD happy path · 401/403 · multi-tenant isolation (cross-org → 404) · validation (400). Reset DB between tests via `cleanDB` helper. No resource ships without this coverage — recipes currently violates this, see below.
 
+## Git Workflow
+_(adopted 2026-11-19 — until then commits went straight to `main`, mixing unrelated features/fixes)_
+
+`main` = production: push to `origin/main` → CI → Railway pre-deploy `npm run migrate:up` → deploy.
+
+- Never commit directly to `main`. One task = one short-lived branch (`feat/…`, `fix/…`, `chore/…`, `test/…`) → PR into `main` → merge only on green CI → delete the branch.
+- Unrelated ideas that come up mid-task go to `IDEAS.md` / `DAILY_LOG.md`, not into the current branch.
+- `developer` branch is not used (no staging environment). Revisit if a Railway staging environment is added.
+- **Claude:** at the start of any code task, check the current branch — if it's `main`, remind me to create a task branch before writing anything.
+
 ---
 
 ## Known Open Issues

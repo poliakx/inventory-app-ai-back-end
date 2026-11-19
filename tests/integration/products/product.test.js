@@ -225,7 +225,7 @@ describe("products API (integration)", () => {
     .send({"quantity": 0})
 
     expect(res.statusCode).toBe(200)
-    expect(res.body.data.quantity).toBe("0.000")
+    expect(res.body.data.quantity).toBe(0)
 
   })
 
@@ -333,4 +333,20 @@ describe("products API (integration)", () => {
 
     expect(res.statusCode).toBe(403)
   });
+
+  it("POST/api/products - product with 4 digits after coma --> 400", async() => {
+     const token = await createAdmin();
+
+    const res = await api
+      .post("/api/products")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: "test product",
+        price: 0.0045,
+        quantity: 10
+        });
+
+    
+    expect(res.body.data.price).toBe(0.0045)
+  })
 })
