@@ -4,4 +4,5 @@ export default {
   globalSetup: "<rootDir>/tests/setup/setupDB.js",
   setupFilesAfterEnv: ["<rootDir>/tests/setup/jest.afterEnv.js"],
   testTimeout: 10000,
+  maxWorkers: 1
 };
